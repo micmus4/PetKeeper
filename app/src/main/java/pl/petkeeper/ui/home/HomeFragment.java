@@ -18,8 +18,13 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentHomeBinding;
+import pl.petkeeper.model.Animal;
 
 public class HomeFragment extends Fragment {
 
@@ -51,24 +56,21 @@ public class HomeFragment extends Fragment {
 
     private void initAnimalsOnFragment( View view )
     {
-        LinearLayout linearLayout = view.findViewById( R.id.mainWindowLinearLayout );
-
-        // for loop will be replaced with for-each loop with Animal objects, but the mechanism
-        // should remain mostly the same (needs frontend adjustments for sure)
-        for( int i = 0; i < 3; i++ )
+        final LinearLayout linearLayout = view.findViewById( R.id.mainWindowLinearLayout );
+        for( final Animal animal : getDemoData() )
         {
             final CardView cardView = new CardView( linearLayout.getContext() );
             final LinearLayout innerLinearLayout = new LinearLayout( cardView.getContext() );
             final TextView textView = new TextView( innerLinearLayout.getContext() );
             final ImageView imageView = new ImageView( innerLinearLayout.getContext() );
+
             final Integer resourceId =
                     getResources()
-                            .getIdentifier( "ulany_boar", "drawable",
+                            .getIdentifier( animal.getPhotoName(), "drawable",
                                     getContext().getPackageName() );
 
-            textView.setText( "TEST" );
+            textView.setText( animal.getName() );
             imageView.setImageResource( resourceId );
-            imageView.setForegroundGravity(Gravity.CENTER);
 
             innerLinearLayout.addView( imageView );
             innerLinearLayout.addView( textView );
@@ -77,5 +79,32 @@ public class HomeFragment extends Fragment {
 
             linearLayout.addView( cardView );
         }
+    }
+
+    private List< Animal > getDemoData()
+    {
+        Animal animal1 =
+                new Animal(1, "Stefan", new Date(2018, 1, 1),
+                        "ulany_boar", null );
+        Animal animal2 =
+                new Animal(2, "Maurycy", new Date(2018, 1, 1),
+                        "ulany_boar", null );
+        Animal animal3 =
+                new Animal(3, "Bogdan", new Date(2018, 1, 1),
+                        "ulany_boar", null );
+        Animal animal4 =
+                new Animal(4, "Genowefa", new Date(2018, 1, 1),
+                        "ulany_boar", null );
+        Animal animal5 =
+                new Animal(5, "Rumcajs", new Date(2018, 1, 1),
+                        "ulany_boar", null );
+
+        List< Animal > animals = new ArrayList<>();
+        animals.add( animal1 );
+        animals.add( animal2 );
+        animals.add( animal3 );
+        animals.add( animal4 );
+        animals.add( animal5 );
+        return animals;
     }
 }

@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="pl.petkeeper.ui.notifications.NotificationsFragment"
+        android:name="pl.petkeeper.ui.animalData.AnimalDataFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_animalData" />
 </navigation>
