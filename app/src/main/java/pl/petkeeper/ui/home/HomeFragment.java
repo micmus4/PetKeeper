@@ -2,8 +2,11 @@ package pl.petkeeper.ui.home;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,15 +23,21 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentHomeBinding;
 import pl.petkeeper.model.Animal;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private FragmentHomeBinding binding;
+
+    private GestureDetector gestureDetector;
+
+    private Map< CardView, Integer > cardViewToAnimalIDMap;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -37,6 +46,8 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        gestureDetector = new GestureDetector(getContext(), new GestureListener());
+        cardViewToAnimalIDMap = new HashMap<>();
 
         return root;
     }
@@ -76,6 +87,8 @@ public class HomeFragment extends Fragment {
             innerLinearLayout.addView( textView );
 
             cardView.addView( innerLinearLayout );
+            cardViewToAnimalIDMap.put( cardView, animal.getId() );
+            initializeOnDoubleClickListenerOnCardViews( cardView );
 
             linearLayout.addView( cardView );
         }
@@ -105,6 +118,39 @@ public class HomeFragment extends Fragment {
         animals.add( animal3 );
         animals.add( animal4 );
         animals.add( animal5 );
+
         return animals;
+    }
+
+    private void initializeOnDoubleClickListenerOnCardViews( final CardView aCardView )
+    {
+        aCardView.setOnTouchListener((view, motionEvent) -> {
+
+            // we set animal id as source of event.
+            motionEvent.setSource( cardViewToAnimalIDMap.get( aCardView ) );
+            gestureDetector.onTouchEvent( motionEvent );
+            return true;
+        });
+    }
+
+
+
+    @Override
+    public void onClick( final View aView )
+    {
+//        if ( aView.getId() == R.id.addBoarButton )
+//        {
+//            navigateToAddDzikFragment();
+//        }
+    }
+
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            Bundle bundle = new Bundle();
+            bundle.putInt( "animalID", e.getSource() );
+            getFragmentManager().setFragmentResult( "homeFragmentArgs", bundle );
+            return true;
+        }
     }
 }
