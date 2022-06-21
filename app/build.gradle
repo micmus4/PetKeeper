@@ -44,4 +44,11 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     compileOnly 'org.projectlombok:lombok:1.18.4'
     annotationProcessor 'org.projectlombok:lombok:1.18.4'
+
+    implementation "androidx.room:room-runtime:2.4.2"
+    implementation "androidx.room:room-rxjava2:2.4.2"
+    implementation "androidx.room:room-rxjava3:2.4.2"
+
+
+    annotationProcessor "androidx.room:room-compiler:2.4.2"
 }

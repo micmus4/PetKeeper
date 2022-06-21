@@ -20,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.room.Room;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.Map;
 
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentHomeBinding;
+import pl.petkeeper.db.AnimalDatabase;
 import pl.petkeeper.model.Animal;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
@@ -39,6 +41,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private Map< CardView, Integer > cardViewToAnimalIDMap;
 
+    private AnimalDatabase animalDatabase;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -48,6 +52,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         View root = binding.getRoot();
         gestureDetector = new GestureDetector(getContext(), new GestureListener());
         cardViewToAnimalIDMap = new HashMap<>();
+        animalDatabase = Room.databaseBuilder( getContext(), AnimalDatabase.class, "animalDatabase" )
+                .allowMainThreadQueries().build();
+
 
         return root;
     }
@@ -68,7 +75,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void initAnimalsOnFragment( View view )
     {
         final LinearLayout linearLayout = view.findViewById( R.id.mainWindowLinearLayout );
-        for( final Animal animal : getDemoData() )
+        for( final Animal animal : animalDatabase.getAnimalDAO().getAllAnimals() )
         {
             final CardView cardView = new CardView( linearLayout.getContext() );
             final LinearLayout innerLinearLayout = new LinearLayout( cardView.getContext() );
@@ -97,19 +104,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private List< Animal > getDemoData()
     {
         Animal animal1 =
-                new Animal(1, "Stefan", new Date(2018, 1, 1),
+                new Animal(1, "Stefan", "31/12/1998",
                         "ulany_boar", null );
         Animal animal2 =
-                new Animal(2, "Maurycy", new Date(2018, 1, 1),
+                new Animal(2, "Maurycy", "31/12/1998",
                         "ulany_boar", null );
         Animal animal3 =
-                new Animal(3, "Bogdan", new Date(2018, 1, 1),
+                new Animal(3, "Bogdan", "31/12/1998",
                         "ulany_boar", null );
         Animal animal4 =
-                new Animal(4, "Genowefa", new Date(2018, 1, 1),
+                new Animal(4, "Genowefa", "31/12/1998",
                         "ulany_boar", null );
         Animal animal5 =
-                new Animal(5, "Rumcajs", new Date(2018, 1, 1),
+                new Animal(5, "Rumcajs", "31/12/1998",
                         "ulany_boar", null );
 
         List< Animal > animals = new ArrayList<>();
@@ -119,6 +126,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         animals.add( animal4 );
         animals.add( animal5 );
 
+        if( animalDatabase.getAnimalDAO().getAllAnimals().isEmpty() ) {
+            animalDatabase.getAnimalDAO().insertDzik(animal1);
+
+        }
         return animals;
     }
 
