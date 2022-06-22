@@ -18,7 +18,7 @@ public interface AnimalDAO
     List< Animal > getAllAnimals();
 
     @Insert
-    void insertDzik( Animal aAnimal );
+    void insertAnimal(Animal aAnimal );
 
     @Query("SELECT * FROM animals WHERE id =:id")
     Animal getAnimal(int id );

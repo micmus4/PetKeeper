@@ -29,8 +29,8 @@ public class Animal
     @ColumnInfo( name = "photo_name" )
     private String photoName;
 
-    @Ignore
-    private Species specie;
+    @ColumnInfo( name = "specieId")
+    private Integer specieId;
 
     public Integer getId() {
         return id;
@@ -48,18 +48,14 @@ public class Animal
         return photoName;
     }
 
-    public Species getSpecie() {
-        return specie;
-    }
-
-    public Animal(Integer id, String name, String dateOfBirth, String photoName, Species specie) {
+    public Animal(Integer id, String name, String dateOfBirth, String photoName, Integer specieId) {
 
 
         this.id = id;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.photoName = photoName;
-        this.specie = specie;
+        this.specieId = specieId;
     }
 
     public void setId(@NonNull Integer id) {
@@ -78,8 +74,12 @@ public class Animal
         this.photoName = photoName;
     }
 
-    public void setSpecie(Species specie) {
-        this.specie = specie;
+    public Integer getSpecieId() {
+        return specieId;
+    }
+
+    public void setSpecieId(Integer specieId) {
+        this.specieId = specieId;
     }
 
     public Animal() {

@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="pl.petkeeper.ui.dashboard.DashboardFragment"
+        android:name="pl.petkeeper.ui.addAnimal.AddAnimalFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_add_animal" />
 
     <fragment
         android:id="@+id/navigation_notifications"

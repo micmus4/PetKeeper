@@ -1,10 +1,7 @@
 package pl.petkeeper.ui.home;
 
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,13 +13,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +68,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void initAnimalsOnFragment( View view )
     {
+        getDemoData();
         final LinearLayout linearLayout = view.findViewById( R.id.mainWindowLinearLayout );
         for( final Animal animal : animalDatabase.getAnimalDAO().getAllAnimals() )
         {
@@ -127,7 +122,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         animals.add( animal5 );
 
         if( animalDatabase.getAnimalDAO().getAllAnimals().isEmpty() ) {
-            animalDatabase.getAnimalDAO().insertDzik(animal1);
+            animalDatabase.getAnimalDAO().insertAnimal(animal1);
 
         }
         return animals;
