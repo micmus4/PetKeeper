@@ -25,7 +25,9 @@ import java.util.Map;
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentHomeBinding;
 import pl.petkeeper.db.AnimalDatabase;
+import pl.petkeeper.model.Alert;
 import pl.petkeeper.model.Animal;
+import pl.petkeeper.model.Species;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
@@ -96,7 +98,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private List< Animal > getDemoData()
+    private void getDemoData()
     {
         Animal animal1 =
                 new Animal(1, "Stefan", "31/12/1998",
@@ -114,18 +116,39 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 new Animal(5, "Rumcajs", "31/12/1998",
                         "ulany_boar", null );
 
-        List< Animal > animals = new ArrayList<>();
-        animals.add( animal1 );
-        animals.add( animal2 );
-        animals.add( animal3 );
-        animals.add( animal4 );
-        animals.add( animal5 );
+        Alert alert1 = new Alert(1, 1, "Nakarm", "Nakarm pieska", "31/12/1998");
+        Alert alert2 = new Alert(2, 1, "Wyprowadz", "Wyprowadz pieska", "31/12/1998");
+        Alert alert3 = new Alert(3, 1, "Zajeb", "Zajeb pieska", "31/12/1998");
+
+        Species specie1 = new Species( 1, "Husky", "wikipedia!!" );
+        Species specie2 = new Species( 2, "York", "wikipedia!!" );
+        Species specie3 = new Species( 3, "Chuj", "wikipedia!!" );
+
+
 
         if( animalDatabase.getAnimalDAO().getAllAnimals().isEmpty() ) {
             animalDatabase.getAnimalDAO().insertAnimal(animal1);
-
+            animalDatabase.getAnimalDAO().insertAnimal(animal2);
+            animalDatabase.getAnimalDAO().insertAnimal(animal3);
+            animalDatabase.getAnimalDAO().insertAnimal(animal4);
+            animalDatabase.getAnimalDAO().insertAnimal(animal5);
         }
-        return animals;
+
+        if( animalDatabase.getAlertDAO().getAllAlerts().isEmpty() )
+        {
+            animalDatabase.getAlertDAO().insertAlert( alert1 );
+            animalDatabase.getAlertDAO().insertAlert( alert2 );
+            animalDatabase.getAlertDAO().insertAlert( alert3 );
+        }
+
+        if( animalDatabase.getSpeciesDAO().getAllSpecies().isEmpty() )
+        {
+            animalDatabase.getSpeciesDAO().insertSpecie( specie1 );
+            animalDatabase.getSpeciesDAO().insertSpecie( specie2 );
+            animalDatabase.getSpeciesDAO().insertSpecie( specie3 );
+        }
+
+
     }
 
     private void initializeOnDoubleClickListenerOnCardViews( final CardView aCardView )

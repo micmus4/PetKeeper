@@ -56,4 +56,9 @@ public class Species
     public void setInfo(String info) {
         this.info = info;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

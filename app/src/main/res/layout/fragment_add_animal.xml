@@ -42,16 +42,10 @@
         app:layout_constraintTop_toBottomOf="@+id/photoLabel">
 
         <LinearLayout
+            android:id="@+id/photoLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ulany_boar" />
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
     </ScrollView>
 
     <Button
