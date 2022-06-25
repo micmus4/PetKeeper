@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.room.Room;
 
 import java.util.ArrayList;
@@ -38,6 +41,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private Map< CardView, Integer > cardViewToAnimalIDMap;
 
     private AnimalDatabase animalDatabase;
+
+    private NavController navController;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -66,6 +71,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     {
         super.onViewCreated(view, savedInstanceState);
         initAnimalsOnFragment( view );
+        navController = Navigation.findNavController( view );
+        Button addButton = view.findViewById( R.id.mainWindowAddButton );
+        addButton.setOnClickListener( this );
     }
 
     private void initAnimalsOnFragment( View view )
@@ -102,19 +110,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     {
         Animal animal1 =
                 new Animal(1, "Stefan", "31/12/1998",
-                        "ulany_boar", null );
+                        "ulany_boar", 1 );
         Animal animal2 =
                 new Animal(2, "Maurycy", "31/12/1998",
-                        "ulany_boar", null );
+                        "ulany_boar", 1 );
         Animal animal3 =
                 new Animal(3, "Bogdan", "31/12/1998",
-                        "ulany_boar", null );
+                        "ulany_boar", 2 );
         Animal animal4 =
                 new Animal(4, "Genowefa", "31/12/1998",
-                        "ulany_boar", null );
+                        "ulany_boar", 2 );
         Animal animal5 =
                 new Animal(5, "Rumcajs", "31/12/1998",
-                        "ulany_boar", null );
+                        "ulany_boar", 2 );
 
         Alert alert1 = new Alert(1, 1, "Nakarm", "Nakarm pieska", "31/12/1998");
         Alert alert2 = new Alert(2, 1, "Wyprowadz", "Wyprowadz pieska", "31/12/1998");
@@ -167,10 +175,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick( final View aView )
     {
-//        if ( aView.getId() == R.id.addBoarButton )
-//        {
-//            navigateToAddDzikFragment();
-//        }
+        if ( aView.getId() == R.id.mainWindowAddButton )
+        {
+            navController.navigate( R.id.action_navigation_home_to_navigation_dashboard );
+        }
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -179,6 +187,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             Bundle bundle = new Bundle();
             bundle.putInt( "animalID", e.getSource() );
             getFragmentManager().setFragmentResult( "homeFragmentArgs", bundle );
+            navController.navigate( R.id.action_navigation_home_to_navigation_animal_data );
             return true;
         }
     }

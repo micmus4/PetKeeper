@@ -16,8 +16,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.room.Room;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -45,6 +48,8 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
     private String selectedImageName;
 
     private Integer specieId;
+
+    private NavController navController;
 
     private final Map< ImageView, String > avatarsToFileNameMap = new HashMap<>();
 
@@ -149,7 +154,22 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
             animal.setSpecieId( specieId );
 
             animalDatabase.getAnimalDAO().insertAnimal( animal );
+            navController.navigate( R.id.action_navigation_dashboard_to_navigation_home );
+        }
+        else if ( aView.getId() == R.id.cancelAddButton )
+        {
+            navController.navigate( R.id.action_navigation_dashboard_to_navigation_home );
         }
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        navController = Navigation.findNavController( view );
+        Button addButton = view.findViewById( R.id.addAnimalButton );
+        Button cancelButton = view.findViewById( R.id.cancelAddButton );
+
+        addButton.setOnClickListener( this );
+        cancelButton.setOnClickListener( this );
+    }
 }

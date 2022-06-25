@@ -19,5 +19,5 @@ public interface SpeciesDAO
     void insertSpecie( Species aSpecie );
 
     @Query("SELECT * FROM species WHERE id =:id")
-    Animal getSpecie(int id );
+    Species getSpecie(int id );
 }

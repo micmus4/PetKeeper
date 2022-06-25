@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.room.Room;
 
 import java.text.SimpleDateFormat;
@@ -23,13 +26,16 @@ import pl.petkeeper.databinding.FragmentAnimalDataBinding;
 import pl.petkeeper.db.AnimalDatabase;
 import pl.petkeeper.model.Animal;
 
-public class AnimalDataFragment extends Fragment {
+public class AnimalDataFragment extends Fragment implements View.OnClickListener
+    {
 
     private FragmentAnimalDataBinding binding;
 
     private int animalId;
 
     private AnimalDatabase animalDatabase;
+
+    private NavController navController;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -49,6 +55,8 @@ public class AnimalDataFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
+
 
     private void setAnimalId( View aView )
     {
@@ -74,6 +82,7 @@ public class AnimalDataFragment extends Fragment {
                 Integer.parseInt( dateParts[1] ), Integer.parseInt( dateParts[0] ) );
         LocalDate nowDate = LocalDate.now();
 
+        specie.setText( animalDatabase.getSpeciesDAO().getSpecie( animal.getSpecieId() ).getName() );
         animalName.setText( animal.getName() );
         dateOfBirth.setText( animal.getDateOfBirth() );
         age.setText(String.valueOf( ChronoUnit.YEARS.between( animalDateOfBirth, nowDate ) ));
@@ -85,7 +94,17 @@ public class AnimalDataFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        navController = Navigation.findNavController( view );
+        Button goBackButton = view.findViewById( R.id.goBackFromAnimalDataToHomeFragmentButton );
+        goBackButton.setOnClickListener( this );
     }
 
 
-}
+        @Override
+        public void onClick(View view) {
+            if( view.getId() == R.id.goBackFromAnimalDataToHomeFragmentButton )
+            {
+                navController.navigate( R.id.action_navigation_notifications_to_navigation_home );
+            }
+        }
+    }

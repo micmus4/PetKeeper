@@ -19,5 +19,5 @@ public interface AlertDAO
     void insertAlert( Alert aAlert );
 
     @Query("SELECT * FROM alerts WHERE id =:id")
-    Animal getAlert(int id );
+    Alert getAlert(int id );
 }

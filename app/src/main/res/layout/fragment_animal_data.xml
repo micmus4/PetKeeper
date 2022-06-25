@@ -7,6 +7,23 @@
     android:layout_height="match_parent"
     tools:context=".ui.animalData.AnimalDataFragment" >
 
+    <Button
+        android:id="@+id/goBackFromAnimalDataToHomeFragmentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="⇐"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/animalImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/alertsLabel"
         android:layout_width="wrap_content"
