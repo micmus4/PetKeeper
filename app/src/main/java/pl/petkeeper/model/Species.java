@@ -87,7 +87,7 @@ public class Species
                         && !line.startsWith("---")) {
                     text += line;
                 }
-                if (text.length() > 200) {
+                if (text.length() > 100) {
                     break;
                 }
             }
