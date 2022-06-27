@@ -5,6 +5,12 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,5 +66,34 @@ public class Species
     @Override
     public String toString() {
         return name;
+    }
+
+    public String getInfo(String name){
+        URL url;
+        try {
+            url = new URL("https://en.wikipedia.org/w/index.php?action=raw&title=" + name.replace(" ", "_"));
+        } catch (MalformedURLException e) {
+            return "Couldn't find any info";
+        }
+        String text = "";
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream()))) {
+            String line = null;
+            while (null != (line = br.readLine())) {
+                line = line.trim();
+                if (!line.startsWith("|")
+                        && !line.startsWith("{")
+                        && !line.startsWith("}")
+                        && !line.startsWith("<center>")
+                        && !line.startsWith("---")) {
+                    text += line;
+                }
+                if (text.length() > 200) {
+                    break;
+                }
+            }
+            return text;
+        } catch (IOException e) {
+            return "Couldn't find any info";
+        }
     }
 }
