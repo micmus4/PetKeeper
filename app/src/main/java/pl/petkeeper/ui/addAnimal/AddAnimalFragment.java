@@ -1,5 +1,8 @@
 package pl.petkeeper.ui.addAnimal;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,6 +30,7 @@ import androidx.room.Room;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +48,10 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
 
     private FragmentAddAnimalBinding binding;
 
+    private Button datePickerToogleButton;
+
+    private DatePickerDialog datePickerDialog;
+
     private AnimalDatabase animalDatabase;
 
     private String selectedImageName;
@@ -50,6 +59,8 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
     private Integer specieId;
 
     private NavController navController;
+
+    private DatePickerDialog.OnDateSetListener dateSetListener;
 
     private final Map< ImageView, String > avatarsToFileNameMap = new HashMap<>();
 
@@ -148,7 +159,7 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
         if ( aView.getId() == R.id.addAnimalButton )
         {
             Animal animal = new Animal();
-            animal.setDateOfBirth( ((EditText)this.getView().findViewById( R.id.animalDateInput )).getText().toString() );
+            animal.setDateOfBirth( ((Button)this.getView().findViewById( R.id.dateOfBirthPicker )).getText().toString() );
             animal.setName( ((TextInputEditText)this.getView().findViewById( R.id.animalInputText )).getText().toString() );
             animal.setPhotoName( selectedImageName );
             animal.setSpecieId( specieId );
@@ -160,16 +171,42 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
         {
             navController.navigate( R.id.action_navigation_dashboard_to_navigation_home );
         }
+        else if( aView.getId() == R.id.dateOfBirthPicker )
+        {
+            datePickerDialog.show();
+        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController( view );
+        datePickerToogleButton = view.findViewById( R.id.dateOfBirthPicker );
         Button addButton = view.findViewById( R.id.addAnimalButton );
         Button cancelButton = view.findViewById( R.id.cancelAddButton );
 
         addButton.setOnClickListener( this );
         cancelButton.setOnClickListener( this );
+        datePickerToogleButton.setOnClickListener( this );
+        Calendar calendar = Calendar.getInstance();
+
+        dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                datePickerToogleButton.setText( i2 + "/" + i1 + "/" + i );
+            }
+        };
+
+        int year = calendar.get( Calendar.YEAR );
+        int month = calendar.get( Calendar.MONTH );
+        int day = calendar.get( Calendar.DAY_OF_MONTH );
+
+        datePickerDialog = new DatePickerDialog( getContext(), AlertDialog.THEME_HOLO_LIGHT,
+                dateSetListener, year, month, day  );
+
+
+
+
     }
 }
