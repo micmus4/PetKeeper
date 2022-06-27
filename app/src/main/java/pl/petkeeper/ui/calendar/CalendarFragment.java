@@ -10,6 +10,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -24,10 +25,13 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentCalendarBinding;
 import pl.petkeeper.databinding.FragmentHomeBinding;
+import pl.petkeeper.db.AnimalDatabase;
+import pl.petkeeper.model.Datemark;
 import pl.petkeeper.ui.home.HomeFragment;
 import pl.petkeeper.ui.home.HomeViewModel;
 
@@ -38,6 +42,8 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate;
     private NavController navController;
+    private AnimalDatabase animalDatabase;
+    private List<Datemark> datemarks;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -54,10 +60,17 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
         CalendarViewModel calendarViewModel =
                 new ViewModelProvider(this).get(CalendarViewModel.class);
         binding = FragmentCalendarBinding.inflate(inflater, container, false);
+
+        animalDatabase = Room.databaseBuilder( getContext(), AnimalDatabase.class, "animalDatabase" )
+                .allowMainThreadQueries().build();
+
         View root = binding.getRoot();
 
         initWidgets(root);
         selectedDate = LocalDate.now();
+
+        setDates();
+
         setMonthView();
 
         Button buttonPrev = (Button) root.findViewById(R.id.prevMonth);
@@ -76,7 +89,12 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
         });
 
         // Inflate the layout for this fragment
+
         return root;
+    }
+
+    private void setDates() {
+        this.datemarks = animalDatabase.getDatemarkDAO().getAllDatemarks();
     }
 
     @Override
@@ -89,7 +107,8 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
         monthYearText.setText(monthYearFromDate(selectedDate));
         ArrayList<String> daysInMonth = daysInMonthArray(selectedDate);
 
-        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this);
+        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, selectedDate,
+                this, animalDatabase, datemarks);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
