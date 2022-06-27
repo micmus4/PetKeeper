@@ -73,7 +73,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         initAnimalsOnFragment( view );
         navController = Navigation.findNavController( view );
         Button addButton = view.findViewById( R.id.mainWindowAddButton );
+        Button calendarButton = view.findViewById( R.id.mainWindowCalendarButton );
         addButton.setOnClickListener( this );
+        calendarButton.setOnClickListener( this );
     }
 
     private void initAnimalsOnFragment( View view )
@@ -178,6 +180,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if ( aView.getId() == R.id.mainWindowAddButton )
         {
             navController.navigate( R.id.action_navigation_home_to_navigation_dashboard );
+        }
+        else if ( aView.getId() == R.id.mainWindowCalendarButton )
+        {
+            navController.navigate( R.id.action_navigation_home_to_navigation_calendar );
         }
     }
 
