@@ -5,6 +5,14 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+
+import Jwiki.Jwiki;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,10 +35,10 @@ public class Species
     public Species() {
     }
 
-    public Species(Integer id, String name, String info) {
+    public Species(Integer id, String name) {
         this.id = id;
         this.name = name;
-        this.info = info;
+        this.info = downloadInfo( name );
     }
 
     public Integer getId() {
@@ -60,5 +68,12 @@ public class Species
     @Override
     public String toString() {
         return name;
+    }
+
+    public String downloadInfo(String name) {
+        Jwiki jwiki;
+        try { jwiki = new Jwiki(name); }
+        catch(Exception e) { return "Couldn't find info :c"; }
+        return (jwiki.getExtractText());
     }
 }
