@@ -90,12 +90,12 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
 
         for(int i = 1; i <= 42; i++){
-            if(i <= dayOfWeek || i > daysInMonth - dayOfWeek) {
+            if(i < dayOfWeek || i > daysInMonth + dayOfWeek - 1) {
                 daysInMonthArray.add("");
             }
             else
             {
-                daysInMonthArray.add(String.valueOf(i + dayOfWeek));
+                daysInMonthArray.add(String.valueOf(i+1 - dayOfWeek));
             }
         }
         return daysInMonthArray;
@@ -123,8 +123,8 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
 
     @Override
     public void onItemClick(int position, String dayText) {
-        if(dayText.equals("")){
-            String message = "SelectedDate " + dayText + " " + monthYearFromDate(selectedDate);
+        if(!dayText.equals("")){
+            String message = "Clicked on " + dayText + " " + monthYearFromDate(selectedDate);
             Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
         }
     }
