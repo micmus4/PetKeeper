@@ -75,6 +75,7 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
         TextView dateOfBirth = aView.findViewById(R.id.dateOfBirthTextView );
         TextView age = aView.findViewById(R.id.animalAge );
         TextView specie = aView.findViewById(R.id.specieTextView );
+        TextView specieDescription = aView.findViewById( R.id.specieDescription );
         ImageView image = aView.findViewById(R.id.animalImage );
 
         String[] dateParts = animal.getDateOfBirth().split( "/" );
@@ -86,6 +87,7 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
         animalName.setText( animal.getName() );
         dateOfBirth.setText( animal.getDateOfBirth() );
         age.setText(String.valueOf( ChronoUnit.YEARS.between( animalDateOfBirth, nowDate ) ));
+        specieDescription.setText( animalDatabase.getSpeciesDAO().getSpecie( animal.getSpecieId() ).getInfo() );
         image.setImageResource( getResources()
                 .getIdentifier( animal.getPhotoName(), "drawable",
                         getContext().getPackageName() ) );
