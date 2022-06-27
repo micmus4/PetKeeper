@@ -10,18 +10,23 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.room.Room;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentDatemarkBinding;
+import pl.petkeeper.db.AnimalDatabase;
 import pl.petkeeper.model.Animal;
+import pl.petkeeper.model.Datemark;
 import pl.petkeeper.ui.calendar.CalendarViewModel;
 
 public class DatemarkFragment extends Fragment implements View.OnClickListener{
@@ -29,6 +34,7 @@ public class DatemarkFragment extends Fragment implements View.OnClickListener{
     private FragmentDatemarkBinding binding;
     private String date;
     private NavController navController;
+    private AnimalDatabase animalDatabase;
 
     public DatemarkFragment() {
         // Required empty public constructor
@@ -44,6 +50,10 @@ public class DatemarkFragment extends Fragment implements View.OnClickListener{
         CalendarViewModel calendarViewModel =
                 new ViewModelProvider(this).get(CalendarViewModel.class);
         binding = FragmentDatemarkBinding.inflate(inflater, container, false);
+
+        animalDatabase = Room.databaseBuilder( getContext(), AnimalDatabase.class, "animalDatabase" )
+                .allowMainThreadQueries().build();
+
         View root = binding.getRoot();
 
         setDate( root );
@@ -73,7 +83,10 @@ public class DatemarkFragment extends Fragment implements View.OnClickListener{
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController( view );
         Button goBackButton = view.findViewById( R.id.goBackFromDatemarkToCalendarButton );
+        Button saveButton = view.findViewById( R.id.saveDatemark );
+
         goBackButton.setOnClickListener( this );
+        saveButton.setOnClickListener( this );
     }
 
 
@@ -83,6 +96,20 @@ public class DatemarkFragment extends Fragment implements View.OnClickListener{
         {
             navController.navigate( R.id.action_navigation_datemark_to_navigation_calendar );
         }
+        if( view.getId() == R.id.saveDatemark ){
+            setDatemarkData();
+        }
+    }
+
+    private void setDatemarkData() {
+        Datemark datemark = new Datemark();
+
+        datemark.setDate(date);
+        datemark.setText( ((EditText)this.getView().findViewById(R.id.datemarkNote)).getText().toString() );
+
+        animalDatabase.getDatemarkDAO().insertDatemark( datemark );
+        navController.navigate( R.id.action_navigation_datemark_to_navigation_calendar );
+
     }
 
 }
