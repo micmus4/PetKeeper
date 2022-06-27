@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+
+import Jwiki.Jwiki;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -68,32 +70,10 @@ public class Species
         return name;
     }
 
-    public String downloadInfo(String name){
-        URL url;
-        try {
-            url = new URL("https://en.wikipedia.org/w/index.php?action=raw&title=" + name.replace(" ", "_"));
-        } catch (MalformedURLException e) {
-            return "Couldn't find any info";
-        }
-        String text = "";
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream()))) {
-            String line = null;
-            while (null != (line = br.readLine())) {
-                line = line.trim();
-                if (!line.startsWith("|")
-                        && !line.startsWith("{")
-                        && !line.startsWith("}")
-                        && !line.startsWith("<center>")
-                        && !line.startsWith("---")) {
-                    text += line;
-                }
-                if (text.length() > 100) {
-                    break;
-                }
-            }
-            return text;
-        } catch (IOException e) {
-            return "Couldn't find any info";
-        }
+    public String downloadInfo(String name) {
+        Jwiki jwiki;
+        try { jwiki = new Jwiki(name); }
+        catch(Exception e) { return "Couldn't find info :c"; }
+        return (jwiki.getExtractText());
     }
 }
