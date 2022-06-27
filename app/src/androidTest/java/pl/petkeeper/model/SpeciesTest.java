@@ -18,8 +18,8 @@ import static org.junit.Assert.*;
 public class SpeciesTest {
     @Test
     public void infoTest() {
-        Species husky = new Species(1, "Husky", "wikipedia");
-        String text = husky.getInfo(husky.getName() );
+        Species husky = new Species(1, "Husky");
+        String text = husky.downloadInfo(husky.getName() );
         assertTrue( text.contains("is a general term for a dog used in the polar regions") );
     }
 

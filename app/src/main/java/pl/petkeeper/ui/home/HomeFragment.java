@@ -128,9 +128,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         Alert alert2 = new Alert(2, 1, "Wyprowadz", "Wyprowadz pieska", "31/12/1998");
         Alert alert3 = new Alert(3, 1, "Zajeb", "Zajeb pieska", "31/12/1998");
 
-        Species specie1 = new Species( 1, "Husky", "wikipedia!!" );
-        Species specie2 = new Species( 2, "York", "wikipedia!!" );
-        Species specie3 = new Species( 3, "Chuj", "wikipedia!!" );
+        Species specie1 = new Species( 1, "Husky");
+        Species specie2 = new Species( 2, "York");
+        Species specie3 = new Species( 3, "Chuj");
 
 
 

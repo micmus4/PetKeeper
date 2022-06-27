@@ -33,10 +33,10 @@ public class Species
     public Species() {
     }
 
-    public Species(Integer id, String name, String info) {
+    public Species(Integer id, String name) {
         this.id = id;
         this.name = name;
-        this.info = info;
+        this.info = downloadInfo( name );
     }
 
     public Integer getId() {
@@ -68,7 +68,7 @@ public class Species
         return name;
     }
 
-    public String getInfo(String name){
+    public String downloadInfo(String name){
         URL url;
         try {
             url = new URL("https://en.wikipedia.org/w/index.php?action=raw&title=" + name.replace(" ", "_"));
