@@ -13,16 +13,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.room.Room;
@@ -34,10 +31,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-import pl.petkeeper.MainActivity;
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentAddAnimalBinding;
 import pl.petkeeper.db.AnimalDatabase;
@@ -72,9 +67,6 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        AddAnimalViewModel addAnimalViewModel =
-                new ViewModelProvider(this).get(AddAnimalViewModel.class);
-
         binding = FragmentAddAnimalBinding.inflate(inflater, container, false);
 
         animalDatabase = Room.databaseBuilder( getContext(), AnimalDatabase.class, "animalDatabase" )
@@ -82,8 +74,6 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
         View root = binding.getRoot();
         initSpeciesSpinner( root );
         initPhotos( root );
-        Button addButton = root.findViewById( R.id.addAnimalButton );
-        addButton.setOnClickListener( this );
         return root;
     }
 
@@ -104,7 +94,7 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                // no impl
             }
         });
     }
@@ -119,7 +109,7 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
 
         LinearLayout linearLayout = aView.findViewById( R.id.photoLayout );
         images = imageNames.stream().map( this::getImageFromFileName ).collect(Collectors.toList());
-        images.forEach( image -> linearLayout.addView( image ) );
+        images.forEach(linearLayout::addView);
         images.forEach( this::initializeOnClickValidationListenerForAvatar );
 
     }
@@ -158,14 +148,7 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
     {
         if ( aView.getId() == R.id.addAnimalButton )
         {
-            Animal animal = new Animal();
-            animal.setDateOfBirth( ((Button)this.getView().findViewById( R.id.dateOfBirthPicker )).getText().toString() );
-            animal.setName( ((TextInputEditText)this.getView().findViewById( R.id.animalInputText )).getText().toString() );
-            animal.setPhotoName( selectedImageName );
-            animal.setSpecieId( specieId );
-
-            animalDatabase.getAnimalDAO().insertAnimal( animal );
-            navController.navigate( R.id.action_navigation_dashboard_to_navigation_home );
+            setAnimalData();
         }
         else if ( aView.getId() == R.id.cancelAddButton )
         {
@@ -180,23 +163,29 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        navController = Navigation.findNavController( view );
-        datePickerToogleButton = view.findViewById( R.id.dateOfBirthPicker );
-        Button addButton = view.findViewById( R.id.addAnimalButton );
-        Button cancelButton = view.findViewById( R.id.cancelAddButton );
+        initComponents( view );
+        buildDatePicker();
+    }
 
-        addButton.setOnClickListener( this );
-        cancelButton.setOnClickListener( this );
+    private void setAnimalData()
+    {
+        Animal animal = new Animal();
+        animal.setDateOfBirth( ((Button)this.getView().findViewById( R.id.dateOfBirthPicker )).getText().toString() );
+        animal.setName( ((TextInputEditText)this.getView().findViewById( R.id.animalInputText )).getText().toString() );
+        animal.setPhotoName( selectedImageName );
+        animal.setSpecieId( specieId );
+
+        animalDatabase.getAnimalDAO().insertAnimal( animal );
+        navController.navigate( R.id.action_navigation_dashboard_to_navigation_home );
+    }
+
+    private void buildDatePicker()
+    {
         datePickerToogleButton.setOnClickListener( this );
         Calendar calendar = Calendar.getInstance();
 
-        dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                datePickerToogleButton.setText( i2 + "/" + i1 + "/" + i );
-            }
-        };
+        dateSetListener = (datePicker, i, i1, i2)
+                -> datePickerToogleButton.setText( i2 + "/" + i1 + "/" + i );
 
         int year = calendar.get( Calendar.YEAR );
         int month = calendar.get( Calendar.MONTH );
@@ -204,9 +193,15 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
 
         datePickerDialog = new DatePickerDialog( getContext(), AlertDialog.THEME_HOLO_LIGHT,
                 dateSetListener, year, month, day  );
+    }
 
-
-
-
+    private void initComponents( View view )
+    {
+        navController = Navigation.findNavController( view );
+        datePickerToogleButton = view.findViewById( R.id.dateOfBirthPicker );
+        Button addButton = view.findViewById( R.id.addAnimalButton );
+        Button cancelButton = view.findViewById( R.id.cancelAddButton );
+        addButton.setOnClickListener( this );
+        cancelButton.setOnClickListener( this );
     }
 }
