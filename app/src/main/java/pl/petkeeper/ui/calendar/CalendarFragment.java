@@ -2,12 +2,18 @@ package pl.petkeeper.ui.calendar;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,6 +28,7 @@ import java.util.ArrayList;
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentCalendarBinding;
 import pl.petkeeper.databinding.FragmentHomeBinding;
+import pl.petkeeper.ui.home.HomeFragment;
 import pl.petkeeper.ui.home.HomeViewModel;
 
 public class CalendarFragment extends Fragment implements CalendarAdapter.OnItemListener {
@@ -30,6 +37,7 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate;
+    private NavController navController;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -71,6 +79,12 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
         return root;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+        navController = Navigation.findNavController( view );
+    }
+
     private void setMonthView() {
         monthYearText.setText(monthYearFromDate(selectedDate));
         ArrayList<String> daysInMonth = daysInMonthArray(selectedDate);
@@ -106,6 +120,12 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
         return date.format(formatter);
     }
 
+    private String dayMonthYearFromDate(LocalDate date)
+    {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        return date.format(formatter);
+    }
+
     private void initWidgets(View root) {
         calendarRecyclerView = root.findViewById(R.id.calendarRecyclerView);
         monthYearText = root.findViewById(R.id.monthYear);
@@ -126,6 +146,13 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
         if(!dayText.equals("")){
             String message = "Clicked on " + dayText + " " + monthYearFromDate(selectedDate);
             Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
+            selectedDate = selectedDate.withDayOfMonth( Integer.parseInt(dayText) );
+            Bundle bundle = new Bundle();
+            bundle.putString( "date", dayMonthYearFromDate( selectedDate ) );
+            getFragmentManager().setFragmentResult( "calendarFragmentArgs", bundle );
+            navController.navigate( R.id.action_navigation_calendar_to_navigation_datemark );
         }
     }
+
+
 }

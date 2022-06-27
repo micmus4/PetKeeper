@@ -49,5 +49,18 @@
         android:name="pl.petkeeper.ui.calendar.CalendarFragment"
         android:label="@string/calendar_title"
         tools:layout="@layout/fragment_calendar" >
+        <action
+            android:id="@+id/action_navigation_calendar_to_navigation_datemark"
+            app:destination="@id/navigation_datemark" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_datemark"
+        android:name="pl.petkeeper.ui.datemark.DatemarkFragment"
+        android:label="@string/title_datemark"
+        tools:layout="@layout/fragment_datemark" >
+        <action
+            android:id="@+id/action_navigation_datemark_to_navigation_calendar"
+            app:destination="@id/navigation_calendar" />
     </fragment>
 </navigation>
