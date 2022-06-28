@@ -149,9 +149,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 new Animal(5, "Rumcajs", "31/12/1998",
                         "ulany_boar", 5 );
 
-        Alert alert1 = new Alert(1, 1, "Nakarm", "Nakarm pieska", "31/12/1998");
+/*        Alert alert1 = new Alert(1, 1, "Nakarm", "Nakarm pieska", "31/12/1998");
         Alert alert2 = new Alert(2, 1, "Wyprowadz", "Wyprowadz pieska", "31/12/1998");
-        Alert alert3 = new Alert(3, 1, "Odbierz", "Odbierz pieska", "31/12/1998");
+        Alert alert3 = new Alert(3, 1, "Odbierz", "Odbierz pieska", "31/12/1998");*/
 
         Species specie1 = new Species( 1, "Husky", "Dog");
         Species specie2 = new Species( 2, "Spaniel", "Dog");
@@ -174,12 +174,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             animalDatabase.getAnimalDAO().insertAnimal(animal5);
         }
 
-        if( animalDatabase.getAlertDAO().getAllAlerts().isEmpty() )
+/*        if( animalDatabase.getAlertDAO().getAllAlerts().isEmpty() )
         {
             animalDatabase.getAlertDAO().insertAlert( alert1 );
             animalDatabase.getAlertDAO().insertAlert( alert2 );
             animalDatabase.getAlertDAO().insertAlert( alert3 );
-        }
+        }*/
 
         if( animalDatabase.getSpeciesDAO().getAllSpecies().isEmpty() )
         {
