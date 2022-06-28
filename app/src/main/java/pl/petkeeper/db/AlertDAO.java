@@ -20,4 +20,10 @@ public interface AlertDAO
 
     @Query("SELECT * FROM alerts WHERE id =:id")
     Alert getAlert(int id );
+
+    @Query("SELECT * FROM alerts WHERE animal_id =:id")
+    List<Alert> getAlertsOnPet( int id );
+
+    @Query("DELETE FROM alerts WHERE id =:id")
+    void deleteAlert(int id);
 }

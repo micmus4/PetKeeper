@@ -24,26 +24,24 @@ public class Alert
     @ColumnInfo( name = "animal_id" )
     private Integer animalId;
 
-    @NonNull
-    @ColumnInfo( name = "title" )
-    private String title;
-
     @ColumnInfo( name = "description" )
     private String description;
 
     @ColumnInfo( name = "due_data" )
     private String dueDate;
 
-    public Alert(Integer id, Integer animalId, String title, String description, String dueDate) {
+    @ColumnInfo( name = "due_hour" )
+    private String dueHour;
+
+    public Alert(Integer id, Integer animalId, String description, String dueDate, String dueHour) {
         this.id = id;
         this.animalId = animalId;
-        this.title = title;
         this.description = description;
         this.dueDate = dueDate;
+        this.dueHour = dueHour;
     }
 
     public Alert() {
-
 
     }
 
@@ -63,14 +61,6 @@ public class Alert
         this.animalId = animalId;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -86,4 +76,8 @@ public class Alert
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
     }
+
+    public String getDueHour() { return dueHour; }
+
+    public void setDueHour(String dueHour) { this.dueHour = dueHour; }
 }
