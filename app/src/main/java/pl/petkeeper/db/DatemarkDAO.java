@@ -19,4 +19,7 @@ public interface DatemarkDAO {
 
     @Query("SELECT * FROM datemarks WHERE date =:date")
     Datemark getDatemark(String date );
+
+    @Query("DELETE FROM datemarks WHERE date =:date")
+    void deleteDatemark(String date );
 }

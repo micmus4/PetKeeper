@@ -76,6 +76,11 @@ public class DatemarkFragment extends Fragment implements View.OnClickListener{
         this.date = date;
         TextView dateTV = aView.findViewById(R.id.datemarkDateTextView);
         dateTV.setText(date);
+        EditText note = aView.findViewById(R.id.datemarkNote);
+        Datemark datemark = animalDatabase.getDatemarkDAO().getDatemark(date);
+        if (datemark!=null) {
+            note.setText(datemark.getText());
+        }
     }
 
     @Override
@@ -84,9 +89,11 @@ public class DatemarkFragment extends Fragment implements View.OnClickListener{
         navController = Navigation.findNavController( view );
         Button goBackButton = view.findViewById( R.id.goBackFromDatemarkToCalendarButton );
         Button saveButton = view.findViewById( R.id.saveDatemark );
+        Button deleteButton = view.findViewById( R.id.deleteDatemark );
 
         goBackButton.setOnClickListener( this );
         saveButton.setOnClickListener( this );
+        deleteButton.setOnClickListener( this );
     }
 
 
@@ -96,19 +103,28 @@ public class DatemarkFragment extends Fragment implements View.OnClickListener{
         {
             navController.navigate( R.id.action_navigation_datemark_to_navigation_calendar );
         }
-        if( view.getId() == R.id.saveDatemark ){
+        else if( view.getId() == R.id.saveDatemark ){
             setDatemarkData();
+        }
+        else if ( view.getId() == R.id.deleteDatemark ){
+            deleteDatemark();
         }
     }
 
+    private void deleteDatemark() {
+        animalDatabase.getDatemarkDAO().deleteDatemark( date );
+        navController.navigate( R.id.action_navigation_datemark_to_navigation_calendar );
+    }
+
     private void setDatemarkData() {
+        animalDatabase.getDatemarkDAO().deleteDatemark( date );
         Datemark datemark = new Datemark();
 
         datemark.setDate(date);
         datemark.setText( ((EditText)this.getView().findViewById(R.id.datemarkNote)).getText().toString() );
 
         animalDatabase.getDatemarkDAO().insertDatemark( datemark );
-        navController.navigate( R.id.action_navigation_datemark_to_navigation_calendar );
+        navController.navigate( R.id.action_navigation_datemark_to_navigation_home );
 
     }
 
