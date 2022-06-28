@@ -162,11 +162,13 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
         hourPickerToggleButton = view.findViewById( R.id.hourOfNotificationPicker );
         Button addAlertButton = view.findViewById( R.id.addAlert );
         Button goBackButton = view.findViewById( R.id.goBackFromAnimalDataToHomeFragmentButton );
+        Button deleteButton = view.findViewById( R.id.deletePetButton );
         downloadAlerts( view );
         buildDatePicker();
         buildHourPicker();
         addAlertButton.setOnClickListener( this );
         goBackButton.setOnClickListener( this );
+        deleteButton.setOnClickListener( this );
     }
 
 
@@ -202,6 +204,15 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
                     navController.navigate(R.id.action_navigation_notifications_to_navigation_addAlert);
                 }
             }
+            else if( view.getId() == R.id.deletePetButton )
+            {
+                deletePet();
+            }
+        }
+
+        private void deletePet() {
+            animalDatabase.getAnimalDAO().deleteAnimal(animalId);
+            navController.navigate(R.id.action_navigation_notifications_to_navigation_home);
         }
 
         private void downloadAlerts(View view)

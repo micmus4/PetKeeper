@@ -22,4 +22,7 @@ public interface AnimalDAO
 
     @Query("SELECT * FROM animals WHERE id =:id")
     Animal getAnimal(int id );
+
+    @Query("DELETE FROM animals where id =:id")
+    void deleteAnimal(int id);
 }
