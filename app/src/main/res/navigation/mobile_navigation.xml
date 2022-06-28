@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_filter"
             app:destination="@id/navigation_filter" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_vets"
+            app:destination="@id/navigation_vets" />
     </fragment>
 
     <fragment
@@ -93,6 +96,16 @@
             app:destination="@id/navigation_notifications" />
         <action
             android:id="@+id/action_navigation_addAlert_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_vets"
+        android:name="pl.petkeeper.ui.vet.VetFragment"
+        android:label="@string/title_vets"
+        tools:layout="@layout/fragment_vet" >
+        <action
+            android:id="@+id/action_navigation_vets_to_navigation_home"
             app:destination="@id/navigation_home" />
     </fragment>
 </navigation>
