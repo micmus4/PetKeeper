@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -44,6 +45,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private NavController navController;
 
+    private String speciesFilter;
+
+    private String petTypeFilter;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -56,6 +61,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         animalDatabase = Room.databaseBuilder( getContext(), AnimalDatabase.class, "animalDatabase" )
                 .allowMainThreadQueries().build();
 
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            speciesFilter = (String) bundle.getSerializable("speciesFilter");
+            petTypeFilter = (String) bundle.getSerializable("petTypeFiilter");
+        }
+        else {
+            speciesFilter = "None";
+            petTypeFilter = "None";
+        }
 
         return root;
     }
@@ -74,9 +88,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         navController = Navigation.findNavController( view );
         Button addButton = view.findViewById( R.id.mainWindowAddButton );
         Button calendarButton = view.findViewById( R.id.mainWindowCalendarButton );
+        Button filterButton = view.findViewById( R.id.mainWindowFilterButton );
         addButton.setOnClickListener( this );
         calendarButton.setOnClickListener( this );
+        filterButton.setOnClickListener( this );
     }
+
 
     private void initAnimalsOnFragment( View view )
     {
@@ -84,27 +101,30 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         final LinearLayout linearLayout = view.findViewById( R.id.mainWindowLinearLayout );
         for( final Animal animal : animalDatabase.getAnimalDAO().getAllAnimals() )
         {
-            final CardView cardView = new CardView( linearLayout.getContext() );
-            final LinearLayout innerLinearLayout = new LinearLayout( cardView.getContext() );
-            final TextView textView = new TextView( innerLinearLayout.getContext() );
-            final ImageView imageView = new ImageView( innerLinearLayout.getContext() );
+            if ( speciesFilter.equals("None") | animalDatabase.getSpeciesDAO().getSpecie(
+                    animal.getSpecieId()).getName().equals( speciesFilter ) ){
+                final CardView cardView = new CardView(linearLayout.getContext());
+                final LinearLayout innerLinearLayout = new LinearLayout(cardView.getContext());
+                final TextView textView = new TextView(innerLinearLayout.getContext());
+                final ImageView imageView = new ImageView(innerLinearLayout.getContext());
 
-            final Integer resourceId =
-                    getResources()
-                            .getIdentifier( animal.getPhotoName(), "drawable",
-                                    getContext().getPackageName() );
+                final Integer resourceId =
+                        getResources()
+                                .getIdentifier(animal.getPhotoName(), "drawable",
+                                        getContext().getPackageName());
 
-            textView.setText( animal.getName() );
-            imageView.setImageResource( resourceId );
+                textView.setText(animal.getName());
+                imageView.setImageResource(resourceId);
 
-            innerLinearLayout.addView( imageView );
-            innerLinearLayout.addView( textView );
+                innerLinearLayout.addView(imageView);
+                innerLinearLayout.addView(textView);
 
-            cardView.addView( innerLinearLayout );
-            cardViewToAnimalIDMap.put( cardView, animal.getId() );
-            initializeOnDoubleClickListenerOnCardViews( cardView );
+                cardView.addView(innerLinearLayout);
+                cardViewToAnimalIDMap.put(cardView, animal.getId());
+                initializeOnDoubleClickListenerOnCardViews(cardView);
 
-            linearLayout.addView( cardView );
+                linearLayout.addView(cardView);
+            }
         }
     }
 
@@ -197,6 +217,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         else if ( aView.getId() == R.id.mainWindowCalendarButton )
         {
             navController.navigate( R.id.action_navigation_home_to_navigation_calendar );
+        }
+        else if ( aView.getId() == R.id.mainWindowFilterButton )
+        {
+            navController.navigate( R.id.action_navigation_home_to_navigation_filter );
         }
     }
 

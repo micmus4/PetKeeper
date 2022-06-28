@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_calendar"
             app:destination="@id/navigation_calendar" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_filter"
+            app:destination="@id/navigation_filter" />
     </fragment>
 
     <fragment
@@ -64,6 +67,16 @@
             app:destination="@id/navigation_calendar" />
         <action
             android:id="@+id/action_navigation_datemark_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_filter"
+        android:name="pl.petkeeper.ui.filter.FilterFragment"
+        android:label="@string/title_filter"
+        tools:layout="@layout/fragment_filter" >
+        <action
+            android:id="@+id/action_navigation_filter_to_navigation_home"
             app:destination="@id/navigation_home" />
     </fragment>
 </navigation>
