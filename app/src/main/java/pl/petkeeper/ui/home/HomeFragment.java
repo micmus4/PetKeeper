@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -44,6 +45,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private NavController navController;
 
+    private String speciesFilter;
+
+    private String petTypeFilter;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -56,6 +61,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         animalDatabase = Room.databaseBuilder( getContext(), AnimalDatabase.class, "animalDatabase" )
                 .allowMainThreadQueries().build();
 
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            speciesFilter = (String) bundle.getSerializable("speciesFilter");
+            petTypeFilter = (String) bundle.getSerializable("petTypeFilter");
+        }
+        else {
+            speciesFilter = "None";
+            petTypeFilter = "None";
+        }
 
         return root;
     }
@@ -74,37 +88,46 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         navController = Navigation.findNavController( view );
         Button addButton = view.findViewById( R.id.mainWindowAddButton );
         Button calendarButton = view.findViewById( R.id.mainWindowCalendarButton );
+        Button filterButton = view.findViewById( R.id.mainWindowFilterButton );
         addButton.setOnClickListener( this );
         calendarButton.setOnClickListener( this );
+        filterButton.setOnClickListener( this );
     }
+
 
     private void initAnimalsOnFragment( View view )
     {
         getDemoData();
         final LinearLayout linearLayout = view.findViewById( R.id.mainWindowLinearLayout );
-        for( final Animal animal : animalDatabase.getAnimalDAO().getAllAnimals() )
-        {
-            final CardView cardView = new CardView( linearLayout.getContext() );
-            final LinearLayout innerLinearLayout = new LinearLayout( cardView.getContext() );
-            final TextView textView = new TextView( innerLinearLayout.getContext() );
-            final ImageView imageView = new ImageView( innerLinearLayout.getContext() );
+        for( final Animal animal : animalDatabase.getAnimalDAO().getAllAnimals() ) {
+            if (petTypeFilter.equals("None") | animalDatabase.getSpeciesDAO().getSpecie(
+                    animal.getSpecieId()).getType().equals( petTypeFilter )
+            ) {
+                if (speciesFilter.equals("None") | animalDatabase.getSpeciesDAO().getSpecie(
+                        animal.getSpecieId()).getName().equals( speciesFilter )) {
+                    final CardView cardView = new CardView(linearLayout.getContext());
+                    final LinearLayout innerLinearLayout = new LinearLayout(cardView.getContext());
+                    final TextView textView = new TextView(innerLinearLayout.getContext());
+                    final ImageView imageView = new ImageView(innerLinearLayout.getContext());
 
-            final Integer resourceId =
-                    getResources()
-                            .getIdentifier( animal.getPhotoName(), "drawable",
-                                    getContext().getPackageName() );
+                    final Integer resourceId =
+                            getResources()
+                                    .getIdentifier(animal.getPhotoName(), "drawable",
+                                            getContext().getPackageName());
 
-            textView.setText( animal.getName() );
-            imageView.setImageResource( resourceId );
+                    textView.setText(animal.getName());
+                    imageView.setImageResource(resourceId);
 
-            innerLinearLayout.addView( imageView );
-            innerLinearLayout.addView( textView );
+                    innerLinearLayout.addView(imageView);
+                    innerLinearLayout.addView(textView);
 
-            cardView.addView( innerLinearLayout );
-            cardViewToAnimalIDMap.put( cardView, animal.getId() );
-            initializeOnDoubleClickListenerOnCardViews( cardView );
+                    cardView.addView(innerLinearLayout);
+                    cardViewToAnimalIDMap.put(cardView, animal.getId());
+                    initializeOnDoubleClickListenerOnCardViews(cardView);
 
-            linearLayout.addView( cardView );
+                    linearLayout.addView(cardView);
+                }
+            }
         }
     }
 
@@ -130,15 +153,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         Alert alert2 = new Alert(2, 1, "Wyprowadz", "Wyprowadz pieska", "31/12/1998");
         Alert alert3 = new Alert(3, 1, "Odbierz", "Odbierz pieska", "31/12/1998");
 
-        Species specie1 = new Species( 1, "Husky");
-        Species specie2 = new Species( 2, "Spaniel");
-        Species specie3 = new Species( 3, "Bulldog");
-        Species specie4 = new Species(4, "Collie");
+        Species specie1 = new Species( 1, "Husky", "Dog");
+        Species specie2 = new Species( 2, "Spaniel", "Dog");
+        Species specie3 = new Species( 3, "Bulldog", "Dog");
+        Species specie4 = new Species(4, "Collie", "Dog");
 
-        Species specie5 = new Species(5, "Sphynx");
-        Species specie6 = new Species(6, "Peterbald");
-        Species specie7 = new Species(7, "Ragdoll");
-        Species specie8 = new Species(8, "Ocicat");
+        Species specie5 = new Species(5, "Sphynx", "Cat");
+        Species specie6 = new Species(6, "Peterbald", "Cat");
+        Species specie7 = new Species(7, "Ragdoll", "Cat");
+        Species specie8 = new Species(8, "Ocicat", "Cat");
 
 
 
@@ -197,6 +220,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         else if ( aView.getId() == R.id.mainWindowCalendarButton )
         {
             navController.navigate( R.id.action_navigation_home_to_navigation_calendar );
+        }
+        else if ( aView.getId() == R.id.mainWindowFilterButton )
+        {
+            navController.navigate( R.id.action_navigation_home_to_navigation_filter );
         }
     }
 

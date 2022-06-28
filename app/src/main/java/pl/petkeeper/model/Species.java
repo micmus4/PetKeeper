@@ -32,13 +32,17 @@ public class Species
     @ColumnInfo( name = "info" )
     private String info;
 
+    @ColumnInfo( name = "type" )
+    private String type;
+
     public Species() {
     }
 
-    public Species(Integer id, String name) {
+    public Species(Integer id, String name, String type) {
         this.id = id;
         this.name = name;
         this.info = downloadInfo( name );
+        this.type = type;
     }
 
     public Integer getId() {
@@ -64,6 +68,10 @@ public class Species
     public void setInfo(String info) {
         this.info = info;
     }
+
+    public String getType() { return type; }
+
+    public void setType(String type) { this.type = type; }
 
     @Override
     public String toString() {
