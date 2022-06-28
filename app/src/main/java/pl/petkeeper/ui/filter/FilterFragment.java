@@ -95,8 +95,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
     private void setFilter() {
         Bundle bundle = new Bundle();
         bundle.putString("speciesFilter", speciesSpinner.getSelectedItem().toString() );
-        bundle.putString("petTypeFilter", speciesSpinner.getSelectedItem().toString() );
-        getFragmentManager().setFragmentResult( "filterFragmentArgs", bundle );
+        bundle.putString("petTypeFilter", petTypeSpinner.getSelectedItem().toString() );
         navController.navigate( R.id.action_navigation_filter_to_navigation_home, bundle );
     }
 }

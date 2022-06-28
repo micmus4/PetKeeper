@@ -99,31 +99,34 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     {
         getDemoData();
         final LinearLayout linearLayout = view.findViewById( R.id.mainWindowLinearLayout );
-        for( final Animal animal : animalDatabase.getAnimalDAO().getAllAnimals() )
-        {
-            if ( speciesFilter.equals("None") | animalDatabase.getSpeciesDAO().getSpecie(
-                    animal.getSpecieId()).getName().equals( speciesFilter ) ){
-                final CardView cardView = new CardView(linearLayout.getContext());
-                final LinearLayout innerLinearLayout = new LinearLayout(cardView.getContext());
-                final TextView textView = new TextView(innerLinearLayout.getContext());
-                final ImageView imageView = new ImageView(innerLinearLayout.getContext());
+        for( final Animal animal : animalDatabase.getAnimalDAO().getAllAnimals() ) {
+            if (petTypeFilter.equals("None") | animalDatabase.getSpeciesDAO().getSpecie(
+                    animal.getSpecieId()).getType().equals( petTypeFilter )
+            ) {
+                if (speciesFilter.equals("None") | animalDatabase.getSpeciesDAO().getSpecie(
+                        animal.getSpecieId()).getName().equals( speciesFilter )) {
+                    final CardView cardView = new CardView(linearLayout.getContext());
+                    final LinearLayout innerLinearLayout = new LinearLayout(cardView.getContext());
+                    final TextView textView = new TextView(innerLinearLayout.getContext());
+                    final ImageView imageView = new ImageView(innerLinearLayout.getContext());
 
-                final Integer resourceId =
-                        getResources()
-                                .getIdentifier(animal.getPhotoName(), "drawable",
-                                        getContext().getPackageName());
+                    final Integer resourceId =
+                            getResources()
+                                    .getIdentifier(animal.getPhotoName(), "drawable",
+                                            getContext().getPackageName());
 
-                textView.setText(animal.getName());
-                imageView.setImageResource(resourceId);
+                    textView.setText(animal.getName());
+                    imageView.setImageResource(resourceId);
 
-                innerLinearLayout.addView(imageView);
-                innerLinearLayout.addView(textView);
+                    innerLinearLayout.addView(imageView);
+                    innerLinearLayout.addView(textView);
 
-                cardView.addView(innerLinearLayout);
-                cardViewToAnimalIDMap.put(cardView, animal.getId());
-                initializeOnDoubleClickListenerOnCardViews(cardView);
+                    cardView.addView(innerLinearLayout);
+                    cardViewToAnimalIDMap.put(cardView, animal.getId());
+                    initializeOnDoubleClickListenerOnCardViews(cardView);
 
-                linearLayout.addView(cardView);
+                    linearLayout.addView(cardView);
+                }
             }
         }
     }
