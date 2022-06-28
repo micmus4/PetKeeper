@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -180,12 +181,20 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
             }
             else if( view.getId() == R.id.addAlert )
             {
-                Bundle bundle = new Bundle();
-                bundle.putString( "date", String.valueOf( datePickerToogleButton.getText()) );
-                bundle.putString( "hour", String.valueOf( hourPickerToggleButton.getText()) );
-                bundle.putInt( "animalID", animalId );
-                getFragmentManager().setFragmentResult( "animalDataFragmentArgs", bundle );
-                navController.navigate( R.id.action_navigation_notifications_to_navigation_addAlert );
+                if ( String.valueOf( datePickerToogleButton.getText() ).equals("Choose date") |
+                 String.valueOf( hourPickerToggleButton.getText()).equals("Choose hour") )
+                {
+                    Toast.makeText(this.getActivity(), "Pick date and time first", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("date", String.valueOf(datePickerToogleButton.getText()));
+                    bundle.putString("hour", String.valueOf(hourPickerToggleButton.getText()));
+                    bundle.putInt("animalID", animalId);
+                    getFragmentManager().setFragmentResult("animalDataFragmentArgs", bundle);
+                    navController.navigate(R.id.action_navigation_notifications_to_navigation_addAlert);
+                }
             }
         }
 
