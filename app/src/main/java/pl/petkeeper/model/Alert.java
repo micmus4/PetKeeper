@@ -44,7 +44,6 @@ public class Alert
 
     public Alert() {
 
-
     }
 
     public Integer getId() {

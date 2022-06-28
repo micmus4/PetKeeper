@@ -13,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import pl.petkeeper.databinding.ActivityMainBinding;
+import pl.petkeeper.utils.NotificationUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +34,15 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(binding.navView, navController);
+        updateNotifications();
+    }
+
+    private void updateNotifications() {
+        NotificationUtils notificationUtils = new NotificationUtils(this);
+        long currentTime = System.currentTimeMillis();
+        long tenSeconds = 1000*10;
+        long triggerReminder = currentTime + tenSeconds;
+        notificationUtils.setReminder( triggerReminder );
     }
 
 }
