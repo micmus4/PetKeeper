@@ -9,6 +9,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 
 import androidx.core.app.NotificationCompat;
 
@@ -55,6 +56,9 @@ public class NotificationUtils extends ContextWrapper {
     public void setReminder(long timeInMillis, String body)
     {
         Intent intent = new Intent(context, ReminderBroadcast.class);
+
+        intent.setAction(new String(body));
+
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);

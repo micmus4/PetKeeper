@@ -12,10 +12,9 @@ public class ReminderBroadcast extends BroadcastReceiver {
     {
         NotificationUtils notificationUtils = new NotificationUtils(context);
 
-        String body = intent.getStringExtra("body");
+        String body = intent.getAction();
 
-        NotificationCompat.Builder _builder = notificationUtils.setNotification(body,
-                "Go deal with your pets!");
+        NotificationCompat.Builder _builder = notificationUtils.setNotification("Hey, reminder!", body);
         notificationUtils.getManager().notify(101, _builder.build());
     }
 }
