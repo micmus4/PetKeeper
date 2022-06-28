@@ -253,11 +253,14 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
                 deleteButton.setText("X");
                 deleteButton.setTextColor(Color.RED);
                 deleteButton.setBackgroundColor(Color.WHITE);
+                deleteButton.setMinHeight(0);
+                deleteButton.setMinWidth(0);
                 deleteButton.setLayoutParams( paramsBT );
 
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick (View aView) {
                         animalDatabase.getAlertDAO().deleteAlert( alert.getId() );
+                        linearLayout.removeView(innerLinearLayout);
                     }
                 });
 
@@ -268,13 +271,5 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
 
                 linearLayout.addView( innerLinearLayout );
             }
-        }
-
-        private void refreshFragment() {
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            if (Build.VERSION.SDK_INT >= 26) {
-                ft.setReorderingAllowed(false);
-            }
-            ft.detach(this).attach(this).commit();
         }
     }
