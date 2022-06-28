@@ -1,5 +1,10 @@
 package pl.petkeeper.ui.animalData;
 
+import static java.lang.Boolean.TRUE;
+
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +25,7 @@ import androidx.room.Room;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentAnimalDataBinding;
@@ -36,6 +42,18 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
     private AnimalDatabase animalDatabase;
 
     private NavController navController;
+
+    private Button datePickerToogleButton;
+
+    private DatePickerDialog.OnDateSetListener dateSetListener;
+
+    private DatePickerDialog datePickerDialog;
+
+    private Button hourPickerToggleButton;
+
+    private TimePickerDialog.OnTimeSetListener hourSetListener;
+
+    private TimePickerDialog hourPickerDialog;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -93,20 +111,64 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
                         getContext().getPackageName() ) );
     }
 
+        private void buildDatePicker()
+        {
+            datePickerToogleButton.setOnClickListener( this );
+            Calendar calendar = Calendar.getInstance();
+
+            dateSetListener = (datePicker, i, i1, i2)
+                    -> datePickerToogleButton.setText( i2 + "/" + i1 + "/" + i );
+
+            int year = calendar.get( Calendar.YEAR );
+            int month = calendar.get( Calendar.MONTH );
+            int day = calendar.get( Calendar.DAY_OF_MONTH );
+
+            datePickerDialog = new DatePickerDialog( getContext(), AlertDialog.THEME_HOLO_LIGHT,
+                    dateSetListener, year, month, day  );
+        }
+
+        private void buildHourPicker()
+        {
+            hourPickerToggleButton.setOnClickListener( this );
+            Calendar calendar = Calendar.getInstance();
+
+            hourSetListener = (datePicker, i, i1)
+                    -> hourPickerToggleButton.setText( i + ":" + i1 );
+
+            int hour = calendar.get( Calendar.HOUR_OF_DAY );
+            int minute = calendar.get( Calendar.MINUTE );
+
+            hourPickerDialog = new TimePickerDialog( getContext(), AlertDialog.THEME_HOLO_LIGHT,
+                    hourSetListener, hour, minute, TRUE);
+        }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController( view );
+        datePickerToogleButton = view.findViewById( R.id.dateOfNotificationPicker);
+        hourPickerToggleButton = view.findViewById( R.id.hourOfNotificationPicker );
         Button goBackButton = view.findViewById( R.id.goBackFromAnimalDataToHomeFragmentButton );
+        buildDatePicker();
+        buildHourPicker();
         goBackButton.setOnClickListener( this );
     }
 
 
         @Override
-        public void onClick(View view) {
+        public void onClick(View view)
+        {
             if( view.getId() == R.id.goBackFromAnimalDataToHomeFragmentButton )
             {
                 navController.navigate( R.id.action_navigation_notifications_to_navigation_home );
+            }
+            else if ( view.getId() == R.id.dateOfNotificationPicker)
+            {
+                datePickerDialog.show();
+            }
+            else if( view.getId() == R.id.hourOfNotificationPicker)
+            {
+                hourPickerDialog.show();
             }
         }
     }
