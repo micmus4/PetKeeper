@@ -45,6 +45,9 @@
         <action
             android:id="@+id/action_navigation_notifications_to_navigation_home"
             app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_notifications_to_navigation_addAlert"
+            app:destination="@id/navigation_addAlert" />
     </fragment>
 
     <fragment
@@ -78,5 +81,15 @@
         <action
             android:id="@+id/action_navigation_filter_to_navigation_home"
             app:destination="@id/navigation_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_addAlert"
+        android:name="pl.petkeeper.ui.animalData.AddAlertFragment"
+        android:label="@string/title_alert"
+        tools:layout="@layout/fragment_add_alert" >
+        <action
+            android:id="@+id/action_navigation_addAlert_to_navigation_notifications"
+            app:destination="@id/navigation_notifications" />
     </fragment>
 </navigation>

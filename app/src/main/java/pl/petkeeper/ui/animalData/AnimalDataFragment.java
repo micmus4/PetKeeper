@@ -148,9 +148,11 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
         navController = Navigation.findNavController( view );
         datePickerToogleButton = view.findViewById( R.id.dateOfNotificationPicker);
         hourPickerToggleButton = view.findViewById( R.id.hourOfNotificationPicker );
+        Button addAlertButton = view.findViewById( R.id.addAlert );
         Button goBackButton = view.findViewById( R.id.goBackFromAnimalDataToHomeFragmentButton );
         buildDatePicker();
         buildHourPicker();
+        addAlertButton.setOnClickListener( this );
         goBackButton.setOnClickListener( this );
     }
 
@@ -169,6 +171,15 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
             else if( view.getId() == R.id.hourOfNotificationPicker)
             {
                 hourPickerDialog.show();
+            }
+            else if( view.getId() == R.id.addAlert )
+            {
+                Bundle bundle = new Bundle();
+                bundle.putString( "date", String.valueOf( datePickerToogleButton.getText()) );
+                bundle.putString( "hour", String.valueOf( hourPickerToggleButton.getText()) );
+                bundle.putInt( "animalID", animalId );
+                getFragmentManager().setFragmentResult( "animalDataFragmentArgs", bundle );
+                navController.navigate( R.id.action_navigation_notifications_to_navigation_addAlert );
             }
         }
     }
