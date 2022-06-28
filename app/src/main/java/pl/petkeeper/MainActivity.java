@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements UpdateNotificatio
             {
                 animalDatabase.getAlertDAO().deleteAlert( alert.getId() );
             } else {
-                notificationUtils.setReminder(triggerNotification);
+                notificationUtils.setReminder(triggerNotification, description);
             }
         }
 

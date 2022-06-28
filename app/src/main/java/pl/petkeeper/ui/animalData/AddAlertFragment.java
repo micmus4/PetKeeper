@@ -157,7 +157,7 @@ public class AddAlertFragment extends Fragment implements View.OnClickListener, 
             {
                 animalDatabase.getAlertDAO().deleteAlert( alert.getId() );
             } else {
-                notificationUtils.setReminder(triggerNotification);
+                notificationUtils.setReminder(triggerNotification, description);
             }
         }
     }
