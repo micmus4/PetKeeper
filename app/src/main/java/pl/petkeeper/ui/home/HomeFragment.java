@@ -233,7 +233,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             Bundle bundle = new Bundle();
             bundle.putInt( "animalID", e.getSource() );
             getFragmentManager().setFragmentResult( "homeFragmentArgs", bundle );
-            navController.navigate( R.id.action_navigation_home_to_navigation_animal_data );
+            navController.navigate( R.id.action_navigation_home_to_navigation_animal_data, bundle );
             return true;
         }
     }

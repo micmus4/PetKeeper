@@ -5,12 +5,14 @@ import static java.lang.Boolean.TRUE;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,10 +28,12 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
+import java.util.List;
 
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentAnimalDataBinding;
 import pl.petkeeper.db.AnimalDatabase;
+import pl.petkeeper.model.Alert;
 import pl.petkeeper.model.Animal;
 
 public class AnimalDataFragment extends Fragment implements View.OnClickListener
@@ -63,6 +67,7 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
         binding = FragmentAnimalDataBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         setAnimalId( root );
+        animalId = getArguments().getInt("animalID");
         animalDatabase = Room.databaseBuilder( getContext(), AnimalDatabase.class, "animalDatabase" )
                         .allowMainThreadQueries().build();
         return root;
@@ -150,6 +155,7 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
         hourPickerToggleButton = view.findViewById( R.id.hourOfNotificationPicker );
         Button addAlertButton = view.findViewById( R.id.addAlert );
         Button goBackButton = view.findViewById( R.id.goBackFromAnimalDataToHomeFragmentButton );
+        downloadAlerts( view );
         buildDatePicker();
         buildHourPicker();
         addAlertButton.setOnClickListener( this );
@@ -180,6 +186,55 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
                 bundle.putInt( "animalID", animalId );
                 getFragmentManager().setFragmentResult( "animalDataFragmentArgs", bundle );
                 navController.navigate( R.id.action_navigation_notifications_to_navigation_addAlert );
+            }
+        }
+
+        private void downloadAlerts(View view)
+        {
+            List<Alert> alerts = animalDatabase.getAlertDAO().getAlertsOnPet( animalId );
+            final LinearLayout linearLayout = view.findViewById( R.id.alertsLayout );
+            final LinearLayout.LayoutParams paramsLL = new LinearLayout
+                    .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            for (Alert alert: alerts
+            ){
+                final LinearLayout innerLinearLayout = new LinearLayout(linearLayout.getContext());
+                innerLinearLayout.setLayoutParams(paramsLL);
+                final LinearLayout.LayoutParams paramsTV = new LinearLayout
+                        .LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                final LinearLayout.LayoutParams paramsBT = new LinearLayout
+                        .LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                paramsTV.setMargins(10, 0, 10, 0);
+
+                final TextView hourView = new TextView(innerLinearLayout.getContext());
+                final TextView dateView = new TextView(innerLinearLayout.getContext());
+                final TextView descriptionView = new TextView(innerLinearLayout.getContext());
+
+                //final Button deleteButton = new Button(innerLinearLayout.getContext());
+
+                hourView.setText( alert.getDueHour() );
+                hourView.setLayoutParams( paramsTV );
+
+                dateView.setText( alert.getDueDate() );
+                dateView.setLayoutParams( paramsTV );
+
+                descriptionView.setText( alert.getDescription() );
+                descriptionView.setLayoutParams( paramsTV );
+
+/*                deleteButton.setText("X");
+                deleteButton.setTextColor(Color.RED);
+                deleteButton.setBackgroundColor(Color.WHITE);
+                deleteButton.setLayoutParams( paramsBT );*/
+
+                innerLinearLayout.addView( hourView );
+                innerLinearLayout.addView( dateView );
+                innerLinearLayout.addView( descriptionView );
+/*                innerLinearLayout.addView( deleteButton );*/
+
+                linearLayout.addView( innerLinearLayout );
             }
         }
     }
