@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -60,6 +62,8 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
 
     private TimePickerDialog hourPickerDialog;
 
+    private String tag;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         AnimalDataViewModel animalDataViewModel =
@@ -67,8 +71,8 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
 
         binding = FragmentAnimalDataBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        setAnimalId( root );
         animalId = getArguments().getInt("animalID");
+        tag = (String) getTag();
         animalDatabase = Room.databaseBuilder( getContext(), AnimalDatabase.class, "animalDatabase" )
                         .allowMainThreadQueries().build();
         return root;
@@ -151,6 +155,8 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setAnimalId( view );
+
         navController = Navigation.findNavController( view );
         datePickerToogleButton = view.findViewById( R.id.dateOfNotificationPicker);
         hourPickerToggleButton = view.findViewById( R.id.hourOfNotificationPicker );
@@ -222,7 +228,7 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
                 final TextView dateView = new TextView(innerLinearLayout.getContext());
                 final TextView descriptionView = new TextView(innerLinearLayout.getContext());
 
-                //final Button deleteButton = new Button(innerLinearLayout.getContext());
+                final Button deleteButton = new Button(innerLinearLayout.getContext());
 
                 hourView.setText( alert.getDueHour() );
                 hourView.setLayoutParams( paramsTV );
@@ -233,17 +239,31 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
                 descriptionView.setText( alert.getDescription() );
                 descriptionView.setLayoutParams( paramsTV );
 
-/*                deleteButton.setText("X");
+                deleteButton.setText("X");
                 deleteButton.setTextColor(Color.RED);
                 deleteButton.setBackgroundColor(Color.WHITE);
-                deleteButton.setLayoutParams( paramsBT );*/
+                deleteButton.setLayoutParams( paramsBT );
+
+                deleteButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick (View aView) {
+                        animalDatabase.getAlertDAO().deleteAlert( alert.getId() );
+                    }
+                });
 
                 innerLinearLayout.addView( hourView );
                 innerLinearLayout.addView( dateView );
                 innerLinearLayout.addView( descriptionView );
-/*                innerLinearLayout.addView( deleteButton );*/
+                innerLinearLayout.addView( deleteButton );
 
                 linearLayout.addView( innerLinearLayout );
             }
+        }
+
+        private void refreshFragment() {
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            if (Build.VERSION.SDK_INT >= 26) {
+                ft.setReorderingAllowed(false);
+            }
+            ft.detach(this).attach(this).commit();
         }
     }
