@@ -18,14 +18,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import pl.petkeeper.MainActivity;
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentAddAlertBinding;
 import pl.petkeeper.db.AnimalDatabase;
 import pl.petkeeper.model.Alert;
 import pl.petkeeper.model.Datemark;
+import pl.petkeeper.utils.NotificationUtils;
+import pl.petkeeper.utils.UpdateNotificationsIterface;
 
 
-public class AddAlertFragment extends Fragment implements View.OnClickListener{
+public class AddAlertFragment extends Fragment implements View.OnClickListener, UpdateNotificationsIterface {
 
     private FragmentAddAlertBinding binding;
     private AnimalDatabase animalDatabase;
@@ -114,6 +125,40 @@ public class AddAlertFragment extends Fragment implements View.OnClickListener{
         alert.setDescription( ((EditText)this.getView().findViewById(R.id.editTextAlertNote)).getText().toString() );
 
         animalDatabase.getAlertDAO().insertAlert( alert );
+        updateNotifications();
         navController.navigate( R.id.action_navigation_addAlert_to_navigation_home );
+    }
+
+    @Override
+    public void updateNotifications() {
+        NotificationUtils notificationUtils = new NotificationUtils(this.getActivity());
+        long currentTime = System.currentTimeMillis();
+
+        List<Alert> alerts = animalDatabase.getAlertDAO().getAllAlerts();
+        for (Alert alert: alerts){
+            String hour = alert.getDueHour();
+            String date = alert.getDueDate();
+            String description = alert.getDescription();
+
+            DateTimeFormatter hourToTime = DateTimeFormatter.ofPattern("H:m");
+            LocalTime time = LocalTime.parse(hour, hourToTime);
+
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+            LocalDate localDate = LocalDate.parse(date, dateFormatter);
+
+            LocalDateTime localDateTime = localDate.atTime(time);
+
+            long triggerNotification;
+
+            ZonedDateTime zdt = localDateTime.atZone(ZoneId.systemDefault());
+            triggerNotification = zdt.toInstant().toEpochMilli();
+
+            if (triggerNotification < currentTime)
+            {
+                animalDatabase.getAlertDAO().deleteAlert( alert.getId() );
+            } else {
+                notificationUtils.setReminder(triggerNotification);
+            }
+        }
     }
 }

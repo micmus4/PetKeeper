@@ -122,7 +122,7 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
             Calendar calendar = Calendar.getInstance();
 
             dateSetListener = (datePicker, i, i1, i2)
-                    -> datePickerToogleButton.setText( i2 + "/" + i1 + "/" + i );
+                    -> datePickerToogleButton.setText( i2 + "/" + (i1+1) + "/" + i );
 
             int year = calendar.get( Calendar.YEAR );
             int month = calendar.get( Calendar.MONTH );
