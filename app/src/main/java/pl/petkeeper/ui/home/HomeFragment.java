@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         Bundle bundle = getArguments();
         if (bundle != null) {
             speciesFilter = (String) bundle.getSerializable("speciesFilter");
-            petTypeFilter = (String) bundle.getSerializable("petTypeFiilter");
+            petTypeFilter = (String) bundle.getSerializable("petTypeFilter");
         }
         else {
             speciesFilter = "None";
@@ -150,15 +150,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         Alert alert2 = new Alert(2, 1, "Wyprowadz", "Wyprowadz pieska", "31/12/1998");
         Alert alert3 = new Alert(3, 1, "Odbierz", "Odbierz pieska", "31/12/1998");
 
-        Species specie1 = new Species( 1, "Husky");
-        Species specie2 = new Species( 2, "Spaniel");
-        Species specie3 = new Species( 3, "Bulldog");
-        Species specie4 = new Species(4, "Collie");
+        Species specie1 = new Species( 1, "Husky", "Dog");
+        Species specie2 = new Species( 2, "Spaniel", "Dog");
+        Species specie3 = new Species( 3, "Bulldog", "Dog");
+        Species specie4 = new Species(4, "Collie", "Dog");
 
-        Species specie5 = new Species(5, "Sphynx");
-        Species specie6 = new Species(6, "Peterbald");
-        Species specie7 = new Species(7, "Ragdoll");
-        Species specie8 = new Species(8, "Ocicat");
+        Species specie5 = new Species(5, "Sphynx", "Cat");
+        Species specie6 = new Species(6, "Peterbald", "Cat");
+        Species specie7 = new Species(7, "Ragdoll", "Cat");
+        Species specie8 = new Species(8, "Ocicat", "Cat");
 
 
 
