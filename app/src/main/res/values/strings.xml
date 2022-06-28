@@ -3,4 +3,12 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="forward"><![CDATA[->]]></string>
+    <string name="backward"><![CDATA[<-]]></string>
+    <string name="calendar_title">Calendar</string>
+    <string name="notes">You can put your notes here</string>
+    <string name="save">Save</string>
+    <string name="title_datemark">Datemark</string>
 </resources>

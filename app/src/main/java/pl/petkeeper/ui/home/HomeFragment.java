@@ -73,7 +73,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         initAnimalsOnFragment( view );
         navController = Navigation.findNavController( view );
         Button addButton = view.findViewById( R.id.mainWindowAddButton );
+        Button calendarButton = view.findViewById( R.id.mainWindowCalendarButton );
         addButton.setOnClickListener( this );
+        calendarButton.setOnClickListener( this );
     }
 
     private void initAnimalsOnFragment( View view )
@@ -113,24 +115,31 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         "ulany_boar", 1 );
         Animal animal2 =
                 new Animal(2, "Maurycy", "31/12/1998",
-                        "ulany_boar", 1 );
+                        "ulany_boar", 2 );
         Animal animal3 =
                 new Animal(3, "Bogdan", "31/12/1998",
-                        "ulany_boar", 2 );
+                        "ulany_boar", 3 );
         Animal animal4 =
                 new Animal(4, "Genowefa", "31/12/1998",
-                        "ulany_boar", 2 );
+                        "ulany_boar", 4 );
         Animal animal5 =
                 new Animal(5, "Rumcajs", "31/12/1998",
-                        "ulany_boar", 2 );
+                        "ulany_boar", 5 );
 
         Alert alert1 = new Alert(1, 1, "Nakarm", "Nakarm pieska", "31/12/1998");
         Alert alert2 = new Alert(2, 1, "Wyprowadz", "Wyprowadz pieska", "31/12/1998");
-        Alert alert3 = new Alert(3, 1, "Zajeb", "Zajeb pieska", "31/12/1998");
+        Alert alert3 = new Alert(3, 1, "Odbierz", "Odbierz pieska", "31/12/1998");
 
         Species specie1 = new Species( 1, "Husky");
-        Species specie2 = new Species( 2, "York");
-        Species specie3 = new Species( 3, "Chuj");
+        Species specie2 = new Species( 2, "Spaniel");
+        Species specie3 = new Species( 3, "Bulldog");
+        Species specie4 = new Species(4, "Collie");
+
+        Species specie5 = new Species(5, "Sphynx");
+        Species specie6 = new Species(6, "Peterbald");
+        Species specie7 = new Species(7, "Ragdoll");
+        Species specie8 = new Species(8, "Ocicat");
+
 
 
 
@@ -154,6 +163,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             animalDatabase.getSpeciesDAO().insertSpecie( specie1 );
             animalDatabase.getSpeciesDAO().insertSpecie( specie2 );
             animalDatabase.getSpeciesDAO().insertSpecie( specie3 );
+            animalDatabase.getSpeciesDAO().insertSpecie( specie4 );
+
+            animalDatabase.getSpeciesDAO().insertSpecie( specie5 );
+            animalDatabase.getSpeciesDAO().insertSpecie( specie6 );
+            animalDatabase.getSpeciesDAO().insertSpecie( specie7 );
+            animalDatabase.getSpeciesDAO().insertSpecie( specie8 );
         }
 
 
@@ -178,6 +193,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if ( aView.getId() == R.id.mainWindowAddButton )
         {
             navController.navigate( R.id.action_navigation_home_to_navigation_dashboard );
+        }
+        else if ( aView.getId() == R.id.mainWindowCalendarButton )
+        {
+            navController.navigate( R.id.action_navigation_home_to_navigation_calendar );
         }
     }
 
