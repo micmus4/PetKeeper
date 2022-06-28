@@ -72,6 +72,7 @@ public class Species
 
     public String downloadInfo(String name) {
         Jwiki jwiki;
+        name = name.replaceAll(" ","_");
         try { jwiki = new Jwiki(name); }
         catch(Exception e) { return "Couldn't find info :c"; }
         return (jwiki.getExtractText());
