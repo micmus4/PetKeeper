@@ -1,39 +1,39 @@
 package pl.petkeeper.ui.vet;
 
-import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.room.Room;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
 
-import com.google.android.gms.common.api.GoogleApiClient;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.maps.model.PlacesSearchResult;
+
+import java.util.Locale;
 
 import pl.petkeeper.R;
-import pl.petkeeper.databinding.FragmentDatemarkBinding;
 import pl.petkeeper.databinding.FragmentVetBinding;
-import pl.petkeeper.db.AnimalDatabase;
-import pl.petkeeper.ui.calendar.CalendarViewModel;
+import pl.petkeeper.utils.NearbySearch;
 
 public class VetFragment extends Fragment {
 
@@ -49,6 +49,9 @@ public class VetFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!Places.isInitialized()) {
+            Places.initialize(getContext(), "AIzaSyBWlRzD7iMsf2lTVPDmWHMUXVjwL9C3og8", Locale.getDefault());
+        }
     }
 
     @Override
@@ -69,13 +72,48 @@ public class VetFragment extends Fragment {
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(@NonNull GoogleMap googleMap) {
+                PlacesClient placesClient = Places.createClient(getContext());
+                final boolean[] moved = {false};
+
                 GoogleMap.OnMyLocationChangeListener myLocationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
                     @Override
                     public void onMyLocationChange(Location location) {
                         LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-                        googleMap.addMarker(new MarkerOptions().position(loc));
-                        if(googleMap != null){
+                        googleMap.addMarker(new MarkerOptions().position(loc).title("U R Here"));
+                        if(googleMap != null & moved[0] == false){
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+                            moved[0] = true;
+                            findVets(location);
+                        }
+                    }
+
+                    public void findVets(Location location) {
+                        PlacesSearchResult[] placesSearchResults = new NearbySearch().run(
+                                new com.google.maps.model.LatLng(location.getLatitude(),
+                                        location.getLongitude())).results;
+
+                        if (placesSearchResults != null )
+                        {
+                            for (PlacesSearchResult address: placesSearchResults)
+                            {
+                                LatLng vetLatLng = new LatLng(address.geometry.location.lat,
+                                        address.geometry.location.lng);
+                                MarkerOptions markerOptions = new MarkerOptions();
+
+                                markerOptions.title("Veterinary");
+
+                                markerOptions.position(vetLatLng);
+
+                                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
+                                markerOptions.title(vetLatLng.latitude + ":" + vetLatLng.longitude);
+
+                                googleMap.addMarker(markerOptions);
+                            }
+                        }
+                        else{
+                            TextView textView = root.findViewById( R.id.closestVetDistance );
+                            textView.setText( "Not found sadge" );
                         }
                     }
                 };
@@ -95,25 +133,6 @@ public class VetFragment extends Fragment {
                 googleMap.setOnMyLocationChangeListener( myLocationChangeListener );
                 }
 
-                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(@NonNull LatLng latLng) {
-                        MarkerOptions markerOptions = new MarkerOptions();
-
-                        markerOptions.position(latLng);
-
-                        markerOptions.title(latLng.latitude + ":" + latLng.longitude);
-
-                        googleMap.clear();
-
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                latLng, 10
-                        ));
-
-                        googleMap.addMarker(markerOptions);
-                    }
-                }
-                );
             }
         });
         // Inflate the layout for this fragment
