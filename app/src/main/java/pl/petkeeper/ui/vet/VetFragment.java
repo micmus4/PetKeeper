@@ -2,8 +2,10 @@ package pl.petkeeper.ui.vet;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.icu.text.DecimalFormat;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,7 +108,18 @@ public class VetFragment extends Fragment {
 
                                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
-                                markerOptions.title(vetLatLng.latitude + ":" + vetLatLng.longitude);
+                                markerOptions.title(address.name);
+
+                                float[] distance = new float[1];
+                                Location.distanceBetween(location.getLatitude(), location.getLongitude(),
+                                        vetLatLng.latitude, vetLatLng.longitude,
+                                        distance);
+
+                                TextView distanceView = root.findViewById( R.id.closestVetDistance );
+                                TextView nameView = root.findViewById( R.id.closestVetName );
+
+                                nameView.setText( address.name );
+                                distanceView.setText( String.valueOf(distance[0]) + "m" );
 
                                 googleMap.addMarker(markerOptions);
                             }
@@ -143,5 +156,30 @@ public class VetFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController( view );
+    }
+
+    public double CalculationByDistance(LatLng StartP, LatLng EndP) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = StartP.latitude;
+        double lat2 = EndP.latitude;
+        double lon1 = StartP.longitude;
+        double lon2 = EndP.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
+                + " Meter   " + meterInDec);
+
+        return Radius * c;
     }
 }
