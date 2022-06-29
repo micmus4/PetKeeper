@@ -3,12 +3,15 @@ package pl.petkeeper.ui.vet;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.icu.text.DecimalFormat;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,13 +34,15 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.maps.model.PlacesSearchResult;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import pl.petkeeper.R;
 import pl.petkeeper.databinding.FragmentVetBinding;
 import pl.petkeeper.utils.NearbySearch;
 
-public class VetFragment extends Fragment {
+public class VetFragment extends Fragment implements View.OnClickListener {
 
     private FragmentVetBinding binding;
     private VetViewModel vetViewModel;
@@ -96,6 +101,7 @@ public class VetFragment extends Fragment {
 
                         if (placesSearchResults != null )
                         {
+                            boolean first = true;
                             for (PlacesSearchResult address: placesSearchResults)
                             {
                                 LatLng vetLatLng = new LatLng(address.geometry.location.lat,
@@ -115,11 +121,29 @@ public class VetFragment extends Fragment {
                                         vetLatLng.latitude, vetLatLng.longitude,
                                         distance);
 
-                                TextView distanceView = root.findViewById( R.id.closestVetDistance );
-                                TextView nameView = root.findViewById( R.id.closestVetName );
+                                if (first) {
+                                    TextView distanceView = root.findViewById(R.id.closestVetDistance);
+                                    TextView nameView = root.findViewById(R.id.closestVetName);
 
-                                nameView.setText( address.name );
-                                distanceView.setText( String.valueOf(distance[0]) + "m" );
+                                    Geocoder geocoder;
+                                    List<Address> addresses;
+                                    geocoder = new Geocoder(getContext(), Locale.getDefault());
+
+                                    String addressLine = address.name + " ";
+
+                                    try {
+                                        addresses = geocoder.getFromLocation(vetLatLng.latitude, vetLatLng.longitude, 1);
+                                        addressLine = addressLine + addresses.get(0).getAddressLine(0);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                    nameView.setText(addressLine);
+                                    distanceView.setText(String.valueOf(distance[0]) + "m");
+                                    first = false;
+                                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(vetLatLng, 16.0f));
+                                }
 
                                 googleMap.addMarker(markerOptions);
                             }
@@ -156,6 +180,9 @@ public class VetFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController( view );
+        Button backButton = view.findViewById( R.id.goBackFromVetToHomeFragmentButton );
+
+        backButton.setOnClickListener( this );
     }
 
     public double CalculationByDistance(LatLng StartP, LatLng EndP) {
@@ -181,5 +208,13 @@ public class VetFragment extends Fragment {
                 + " Meter   " + meterInDec);
 
         return Radius * c;
+    }
+
+    @Override
+    public void onClick(View aView) {
+        if ( aView.getId() == R.id.goBackFromVetToHomeFragmentButton )
+        {
+            navController.navigate( R.id.action_navigation_vets_to_navigation_home );
+        }
     }
 }
