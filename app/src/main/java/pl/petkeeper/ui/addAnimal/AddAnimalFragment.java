@@ -16,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -89,7 +90,7 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
         speciesDropdownList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                specieId = i;
+                specieId = i+1;
             }
 
             @Override
@@ -175,8 +176,15 @@ public class AddAnimalFragment extends Fragment implements View.OnClickListener 
         animal.setPhotoName( selectedImageName );
         animal.setSpecieId( specieId );
 
-        animalDatabase.getAnimalDAO().insertAnimal( animal );
-        navController.navigate( R.id.action_navigation_dashboard_to_navigation_home );
+        if( animal.getDateOfBirth().equals("Choose date") | animal.getName().equals("") )
+        {
+            Toast.makeText(this.getActivity(), "Pick date and time first", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            animalDatabase.getAnimalDAO().insertAnimal(animal);
+            navController.navigate(R.id.action_navigation_dashboard_to_navigation_home);
+        }
     }
 
     private void buildDatePicker()

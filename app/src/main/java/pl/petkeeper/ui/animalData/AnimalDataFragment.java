@@ -163,6 +163,7 @@ public class AnimalDataFragment extends Fragment implements View.OnClickListener
         Button addAlertButton = view.findViewById( R.id.addAlert );
         Button goBackButton = view.findViewById( R.id.goBackFromAnimalDataToHomeFragmentButton );
         Button deleteButton = view.findViewById( R.id.deletePetButton );
+        deleteButton.setBackgroundColor(Color.RED);
         downloadAlerts( view );
         buildDatePicker();
         buildHourPicker();

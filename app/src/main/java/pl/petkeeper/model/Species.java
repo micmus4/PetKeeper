@@ -12,10 +12,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
-import Jwiki.Jwiki;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import pl.petkeeper.utils.Jwiki;
 
 @Entity( tableName = "species" )
 public class Species
