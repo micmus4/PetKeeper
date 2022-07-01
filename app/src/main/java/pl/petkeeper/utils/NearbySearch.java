@@ -14,7 +14,7 @@ public class NearbySearch {
 
     public PlacesSearchResponse run(LatLng latLng){
         GeoApiContext context = new GeoApiContext.Builder()
-                .apiKey("AIzaSyBWlRzD7iMsf2lTVPDmWHMUXVjwL9C3og8")
+                .apiKey("keyhere")
                 .build();
 
         try {

@@ -57,7 +57,7 @@ public class VetFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!Places.isInitialized()) {
-            Places.initialize(getContext(), "AIzaSyBWlRzD7iMsf2lTVPDmWHMUXVjwL9C3og8", Locale.getDefault());
+            Places.initialize(getContext(), "keyhere", Locale.getDefault());
         }
     }
 
